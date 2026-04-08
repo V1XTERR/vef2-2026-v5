@@ -1,7 +1,8 @@
+import Link from "next/link";
 import { client } from "../../../lib/sanity";
 import { PortableText } from "@portabletext/react";
 
-export default async function Page({ params }: any) {
+export default async function PostPage({ params }: any) {
   const resolvedParams = await params;
 
   const slug = Array.isArray(resolvedParams.slug)
@@ -17,13 +18,24 @@ export default async function Page({ params }: any) {
   );
 
   if (!post) {
-    return <div style={{ padding: "2rem" }}>Post not found</div>;
+    return (
+      <div className="not-found">
+        <h2>Grein fannst ekki</h2>
+        <p>Þessi grein er ekki til eða hefur verið fjarlægð.</p>
+        <Link href="/posts">← Til baka í greinar</Link>
+      </div>
+    );
   }
 
   return (
-    <main style={{ padding: "2rem" }}>
-      <h1>{post.title}</h1>
-      <PortableText value={post.body} />
-    </main>
+    <article className="post-page">
+      <Link href="/posts" className="post-page__back">
+        ← Til baka í greinar
+      </Link>
+      <h1 className="post-page__title">{post.title}</h1>
+      <div className="post-page__body">
+        <PortableText value={post.body} />
+      </div>
+    </article>
   );
 }

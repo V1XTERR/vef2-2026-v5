@@ -2,53 +2,41 @@ import Link from "next/link";
 import { client } from "../../lib/sanity";
 
 async function getPosts() {
-  return await client.fetch(`*[_type == "post"]{
+  return await client.fetch(`*[_type == "post"] | order(_createdAt desc) {
     _id,
     title,
     slug
   }`);
 }
 
-export default async function Page() {
+export default async function PostsPage() {
   const posts = await getPosts();
 
   return (
-    <main
-      style={{
-        padding: "2rem",
-        maxWidth: "800px",
-        margin: "0 auto",
-      }}
-    >
-      <h1
-        style={{
-          fontSize: "2rem",
-          marginBottom: "2rem",
-        }}
-      >
-        Posts
-      </h1>
+    <div className="posts-page">
+      <div className="posts-page__header">
+        <h1>Greinar</h1>
+        <p>{posts.length} grein{posts.length !== 1 ? "ar" : ""} til staðar</p>
+      </div>
 
-      {posts.length === 0 && <p>No posts yet...</p>}
-
-      {posts.map((p: any) =>
-        p.slug?.current ? (
-          <Link key={p._id} href={`/posts/${p.slug.current}`}>
-            <div
-              style={{
-                padding: "1rem",
-                marginBottom: "1rem",
-                border: "1px solid #333",
-                borderRadius: "10px",
-                cursor: "pointer",
-                transition: "0.2s",
-              }}
-            >
-              <p style={{ fontSize: "1.2rem" }}>{p.title}</p>
-            </div>
-          </Link>
-        ) : null
+      {posts.length === 0 ? (
+        <div className="posts-empty">
+          <p>Engar greinar til staðar enn.</p>
+        </div>
+      ) : (
+        <div className="posts-list">
+          {posts.map((post: any) =>
+            post.slug?.current ? (
+              <Link key={post._id} href={`/posts/${post.slug.current}`}>
+                <div className="post-card">
+                  <span className="post-card__title">{post.title}</span>
+                  <span className="post-card__arrow">→</span>
+                </div>
+              </Link>
+            ) : null
+          )}
+        </div>
       )}
-    </main>
+    </div>
   );
 }

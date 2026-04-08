@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { client } from "../lib/sanity";
 
 async function getFrontpage() {
@@ -18,13 +19,24 @@ function portableTextToString(blocks: any[]) {
 
 export default async function Home() {
   const data = await getFrontpage();
-
   const text = portableTextToString(data?.body);
 
   return (
-    <main style={{ padding: "2rem" }}>
-      <h1>{data?.title}</h1>
-      <p>{text}</p>
-    </main>
+    <section className="hero">
+      <span className="hero__tag">Velkomin</span>
+      <h1 className="hero__title">{data?.title ?? "Bloggið mitt"}</h1>
+      <div className="hero__body">
+        {text ? (
+          text.split("\n").map((paragraph: string, i: number) =>
+            paragraph.trim() ? <p key={i}>{paragraph}</p> : null
+          )
+        ) : (
+          <p>Engin lýsing til staðar.</p>
+        )}
+      </div>
+      <div className="hero__cta">
+        <Link href="/posts">Skoða allar greinar →</Link>
+      </div>
+    </section>
   );
 }
