@@ -33,7 +33,7 @@ export default function RootLayout({
           <header className="site-header">
             <nav>
               <Link href="/" className="nav-logo">
-                📝 Bloggið mitt
+               Bloggið okkar
               </Link>
               <ul className="nav-links">
                 <li>
